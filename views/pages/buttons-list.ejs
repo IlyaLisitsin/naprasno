@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/button.css" />
+</head>
+<body>
+<% for(var i = 0; i < buttons.length; i++) {%>
+    <%- include('./button', { button: buttons[i] }); %>
+<%} %>
+</body>
+<script>
+    document.querySelectorAll('.button-container').forEach(container => {
+        const id = container.getAttribute('id');
+        const audio = document.querySelector(`#${id} audio`);
+        const dataCircle = document.querySelector(`#${id} .ko-progress-circle`);
+
+        dataCircle.addEventListener('click', () => audio.play());
+
+        audio.addEventListener('playing', () => {
+            const i = setInterval(() => {
+                dataCircle.setAttribute('data-progress', Math.floor(audio.currentTime / audio.duration * 100));
+                if (dataCircle.getAttribute('data-progress') >= 100) {
+                    clearInterval(i);
+                }
+            }, 70)
+        })
+
+    })
+</script>
+</html>

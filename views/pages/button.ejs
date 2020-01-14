@@ -1,0 +1,18 @@
+<div class="button-container" id="<%=button.id %>">
+    <div class="ko-progress-circle" data-progress="0">
+        <div class="ko-circle">
+            <div class="full ko-progress-circle__slice">
+                <div class="ko-progress-circle__fill"></div>
+            </div>
+            <div class="ko-progress-circle__slice">
+                <div class="ko-progress-circle__fill"></div>
+                <div class="ko-progress-circle__fill ko-progress-circle__bar"></div>
+            </div>
+        </div>
+        <div class="ko-progress-circle__overlay" style="background-image: url(<%=button.avatar %>)"></div>
+    </div>
+    <audio preload="none">
+        <source src="<%=button.audioSrc %>" type="audio/ogg; codecs=vorbis">
+    </audio>
+</div>
+
