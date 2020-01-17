@@ -26,6 +26,22 @@
 
             return array;
         }
+
+        function convertBufferToBinary(buffer) {
+            console.log(buffer.data)
+            // const raw = buffer.data;
+            // const length = buffer.data.length;
+            const array = new Uint8Array(new ArrayBuffer(buffer.data.length));
+
+            console.log('resar', new Uint8Array(buffer.data))
+
+            for (let i = 0; i < buffer.length; i++) {
+                // array[i] = buffer.data[i];
+                array[i] = 5;
+            }
+
+            return array;
+        }
     </script>
 <script>
     const buttons = JSON.parse('<%- buttons %>');
@@ -36,12 +52,11 @@
         const source = document.querySelector(`#${id} audio source`);
         const dataCircle = document.querySelector(`#${id} .ko-progress-circle`);
 
-        var binary= convertDataURIToBinary(buttons[index].audioSrc);
-        var blob=new Blob([binary], {type : 'audio/ogg'});
-        var blobUrl = URL.createObjectURL(blob);
+        const binary = new Uint8Array(buttons[index].audioBuffer.data);
+        const blob = new Blob([binary], { type : 'audio/ogg' });
+        const blobUrl = URL.createObjectURL(blob);
 
-        source.setAttribute('src', blobUrl)
-
+        source.setAttribute('src', blobUrl);
         dataCircle.addEventListener('click', () => audio.play());
 
         // var div = document.createElement('div')

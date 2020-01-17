@@ -4,6 +4,8 @@ const PORT = process.env.PORT || 5000;
 const Blob = require('fetch-blob');
 const stream = require('stream');
 
+const atob = require('atob');
+
 
 const fs = require('fs');
 
@@ -60,15 +62,8 @@ express()
   .get('/buttons', (req, res) => {
       s3.getObject(params3, (err, data) => {
 
-          // const file = fs.createWriteStream('kek.ogg');
-          // file.write(data.Body);
-          // file.end();
-
-          var bufferStream = new stream.PassThrough();
-          bufferStream.end(data.Body)
-
           res.render('pages/buttons-list', { buttons: JSON.stringify([
-                  { id: `misha-ratue-${Math.random().toString(36).substr(2, 9)}`, audioSrc: data.Body.toString('base64'), avatar: '/buttons-content/misha-ratue.jpg' },
+                  { id: `misha-ratue-${Math.random().toString(36).substr(2, 9)}`, audioBuffer: data.Body, avatar: '/buttons-content/misha-ratue.jpg' },
                   // { id: `andrei-karasique-${Math.random().toString(36).substr(2, 9)}`, audioSrc: '/buttons-content/andrei-karasique.ogg', avatar: '/buttons-content/andrei-karasique.jpg' },
               ]) })
       })
