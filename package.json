@@ -12,8 +12,11 @@
     "test": "node test.js"
   },
   "dependencies": {
+    "atob": "^2.1.2",
+    "aws-sdk": "^2.604.0",
     "ejs": "^2.5.6",
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "fetch-blob": "^1.0.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.2",
