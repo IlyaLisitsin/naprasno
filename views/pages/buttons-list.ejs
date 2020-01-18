@@ -3,18 +3,42 @@
 <head>
     <link rel="stylesheet" type="text/css" href="/stylesheets/button.css" />
 </head>
-<body>
-<% for(var i = 0; i < buttons.length; i++) {%>
-    <%- include('./button', { button: buttons[i] }); %>
+<body style="width: 80%;
+    display: flex;
+    justify-content: center;">
+<% for(var i = 0; i < JSON.parse(buttons).length; i++) {%>
+    <%- include('./button', { button: JSON.parse(buttons)[i] }); %>
 <%} %>
 </body>
+
 <script>
-    document.querySelectorAll('.button-container').forEach(container => {
+    const buttons = JSON.parse('<%- buttons %>');
+
+    document.querySelectorAll('.button-container').forEach((container, index) => {
         const id = container.getAttribute('id');
         const audio = document.querySelector(`#${id} audio`);
+        const source = document.querySelector(`#${id} audio source`);
         const dataCircle = document.querySelector(`#${id} .ko-progress-circle`);
+        const avatar = document.querySelector(`#${id} .ko-progress-circle__overlay`);
 
+        // Buffer coming from BE is being stringified by JSON stringify
+        const binary = new Uint8Array(buttons[index].audioBuffer.data);
+        const blob = new Blob([binary], { type : 'audio/ogg' });
+        const blobUrl = URL.createObjectURL(blob);
+
+        audio.load();
+
+        source.setAttribute('src', blobUrl);
         dataCircle.addEventListener('click', () => audio.play());
+
+        ("src", "dynamicImage.jpg?" + new Date().valueOf());
+
+        const imgBinary = new Uint8Array(buttons[index].avatarBuffer.data);
+        const imgBlob = new Blob([imgBinary], { type : 'image/jpg' });
+        const imgBlobUrl = URL.createObjectURL(imgBlob);
+
+        avatar.style = `background-image: url(${imgBlobUrl})`
+        // ("src", "dynamicImage.jpg?" + new Date().valueOf());
 
         audio.addEventListener('playing', () => {
             const i = setInterval(() => {
@@ -28,3 +52,5 @@
     })
 </script>
 </html>
+
+

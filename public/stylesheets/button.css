@@ -1,10 +1,11 @@
 .ko-progress-circle {
-    margin: 20px auto;
     width: 120px;
     height: 120px;
     background-color: #D9D9D9;
     border-radius: 50%;
     cursor: pointer;
+    margin-left: 10px;
+    margin-bottom: 10px;
 }
 .ko-progress-circle .ko-progress-circle__slice, .ko-progress-circle .ko-progress-circle__fill {
     width: 120px;
