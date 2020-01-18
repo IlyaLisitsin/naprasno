@@ -637,3 +637,4 @@
 }
 .ko-progress-circle[data-progress='100'] .ko-progress-circle__fill.ko-progress-circle__bar {
     transform: rotate(360deg);
+}
