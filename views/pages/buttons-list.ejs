@@ -28,6 +28,13 @@
         }
     }
 
+    /*@media screen and (max-width: 500px) {*/
+    /*    .buttons-wrapper {*/
+    /*        flex-direction: column !important;*/
+    /*        align-items: center;*/
+    /*    }*/
+    /*}*/
+
 
 </style>
 <canvas id="canvas" width="1920" height="1080"></canvas>
@@ -67,14 +74,22 @@
         const dataCircle = document.querySelector(`#${id} .ko-progress-circle`);
         const avatar = document.querySelector(`#${id} .ko-progress-circle__overlay`);
 
-        // Buffer coming from BE is being stringified by JSON stringify
-        const binary = new Uint8Array(buttons[index].audioBuffer.data);
-        const blob = new Blob([binary], { type : 'audio/ogg' });
-        const blobUrl = URL.createObjectURL(blob);
 
-        audio.load();
+        container.addEventListener('click', () => {
+            fetch(`https://stormy-woodland-27362.herokuapp.com/buttons/${id}`)
+            // fetch(`http://localhost:3000/buttons/${id}`, { referrer: '' })
+                .then(response => response.json())
+                .then(audioBuffer => {
+                    const binary = new Uint8Array(audioBuffer.data);
+                    const blob = new Blob([binary], { type : 'audio/ogg' });
+                    const blobUrl = URL.createObjectURL(blob);
 
-        source.setAttribute('src', blobUrl);
+                    audio.load();
+                    source.setAttribute('src', blobUrl)
+                    audio.play();
+                })
+        })
+
         dataCircle.addEventListener('click', () => audio.play());
 
         const imgBinary = new Uint8Array(buttons[index].avatarBuffer.data);

@@ -21,15 +21,11 @@ const httpGet = url => {
 const generateRenderInstance = async function () {
     const usersArr = await SavedUser.find({});
 
-    const [audioArr, avatarArr] = await Promise.all([
-        Promise.all(usersArr.map(({ audioUrl}) => httpGet(`https://api.telegram.org/file/bot${process.env.TG_TOKEN}/${audioUrl}`))),
-        Promise.all(usersArr.map(({ avatarUrl }) => httpGet(`https://api.telegram.org/file/bot${process.env.TG_TOKEN}/${avatarUrl}`))),
-    ]);
+    const avatarArr = await Promise.all(usersArr.map(({ avatarUrl }) => httpGet(`https://api.telegram.org/file/bot${process.env.TG_TOKEN}/${avatarUrl}`)))
 
-    const renderInstance = audioArr.map((audioBuffer, index) => ({
-        id: `_${Math.random().toString(36).substr(2, 9)}`,
-        audioBuffer,
-        avatarBuffer: avatarArr[index],
+    const renderInstance = avatarArr.map((avatarBuffer, index) => ({
+        id: usersArr[index].username,
+        avatarBuffer,
     }));
 
     return renderInstance;
