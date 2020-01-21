@@ -3,16 +3,55 @@
 <head>
     <link rel="stylesheet" type="text/css" href="/stylesheets/button.css" />
 </head>
-<body style="width: 80%;
-    display: flex;
-    justify-content: center;">
-<% for(var i = 0; i < JSON.parse(buttons).length; i++) {%>
-    <%- include('./button', { button: JSON.parse(buttons)[i] }); %>
-<%} %>
+<style>
+    body, html {
+        padding: 0;
+        margin: 0;
+    }
+
+    canvas {
+        position: fixed;
+    }
+
+    .buttons-wrapper {
+        width: 80%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 0 auto;
+    }
+
+
+</style>
+<canvas id="canvas" width="1920" height="1080"></canvas>
+<body>
+    <div class="buttons-wrapper">
+        <% for(var i = 0; i < JSON.parse(buttons).length; i++) {%>
+            <%- include('./button', { button: JSON.parse(buttons)[i] }); %>
+        <%} %>
+    </div>
 </body>
 
 <script>
     const buttons = JSON.parse('<%- buttons %>');
+    const S = Math.sin;
+    const C = Math.cos;
+    const c = document.querySelector('canvas');
+    const x = c.getContext('2d');
+
+    function u() {
+        const t = new Date().getTime() / 1000 / 3;
+
+        x.save();
+        x.fillRect(0, 0, 600, 200);
+        x.restore();
+
+        for(i=c.width|=p=355/226;i--;x[i&5?'arc':'moveTo'](960,600-50*z,2e3/z,b=((i>>3)*2+S(i*p)-z)/8%4*p,b))z=2.5-2*t%1+(i>>7)+C(i*p)/2;x.fill()
+        window.requestAnimationFrame(u);
+
+    }
+
+    u()
 
     document.querySelectorAll('.button-container').forEach((container, index) => {
         const id = container.getAttribute('id');
@@ -31,14 +70,11 @@
         source.setAttribute('src', blobUrl);
         dataCircle.addEventListener('click', () => audio.play());
 
-        ("src", "dynamicImage.jpg?" + new Date().valueOf());
-
         const imgBinary = new Uint8Array(buttons[index].avatarBuffer.data);
         const imgBlob = new Blob([imgBinary], { type : 'image/jpg' });
         const imgBlobUrl = URL.createObjectURL(imgBlob);
 
         avatar.style = `background-image: url(${imgBlobUrl})`
-        // ("src", "dynamicImage.jpg?" + new Date().valueOf());
 
         audio.addEventListener('playing', () => {
             const i = setInterval(() => {
