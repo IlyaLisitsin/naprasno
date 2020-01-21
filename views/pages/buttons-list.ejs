@@ -67,13 +67,29 @@
 
     u()
 
-    document.querySelectorAll('.button-container').forEach((container, index) => {
+    const promises = buttons.map((button, index) => {
+        new Promise(resolve => {
+            const avatarBuffer = button.avatarBuffer;
+            const id = button.id;
+
+            const avatar = document.querySelector(`#${id} .ko-progress-circle__overlay`);
+
+            const imgBinary = new Uint8Array(avatarBuffer.data);
+            const imgBlob = new Blob([imgBinary], { type : 'image/jpg' });
+            const imgBlobUrl = URL.createObjectURL(imgBlob);
+
+            avatar.style = `background-image: url(${imgBlobUrl})`
+            resolve()
+        })
+    })
+
+    Promise.all(promises)
+
+    document.querySelectorAll('.button-container').forEach((container) => {
         const id = container.getAttribute('id');
         const audio = document.querySelector(`#${id} audio`);
         const source = document.querySelector(`#${id} audio source`);
         const dataCircle = document.querySelector(`#${id} .ko-progress-circle`);
-        const avatar = document.querySelector(`#${id} .ko-progress-circle__overlay`);
-
 
         container.addEventListener('click', () => {
             fetch(`https://stormy-woodland-27362.herokuapp.com/buttons/${id}`)
@@ -91,12 +107,6 @@
         })
 
         dataCircle.addEventListener('click', () => audio.play());
-
-        const imgBinary = new Uint8Array(buttons[index].avatarBuffer.data);
-        const imgBlob = new Blob([imgBinary], { type : 'image/jpg' });
-        const imgBlobUrl = URL.createObjectURL(imgBlob);
-
-        avatar.style = `background-image: url(${imgBlobUrl})`
 
         audio.addEventListener('playing', () => {
             const i = setInterval(() => {
