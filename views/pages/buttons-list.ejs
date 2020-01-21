@@ -11,6 +11,7 @@
 
     canvas {
         position: fixed;
+        height: 100%;
     }
 
     .buttons-wrapper {
@@ -19,6 +20,12 @@
         flex-wrap: wrap;
         justify-content: center;
         margin: 0 auto;
+    }
+
+    @media screen and (min-width: 1340px) {
+        canvas {
+            width: 100%;
+        }
     }
 
 
@@ -46,7 +53,7 @@
         x.fillRect(0, 0, 600, 200);
         x.restore();
 
-        for(i=c.width|=p=355/226;i--;x[i&5?'arc':'moveTo'](960,600-50*z,2e3/z,b=((i>>3)*2+S(i*p)-z)/8%4*p,b))z=2.5-2*t%1+(i>>7)+C(i*p)/2;x.fill()
+        for(i=c.width|=p=355/226;i--;x[i&5?'arc':'moveTo'](960,600-50*z,2e3/z,b=((i>>3)*2+S(i*p)-z)/8%4*p,b))z=2.5-2*t%1+(i>>7)+C(i*p)/2;x.fillStyle='rgb(185, 160, 160)';x.fill()
         window.requestAnimationFrame(u);
 
     }

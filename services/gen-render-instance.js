@@ -2,6 +2,8 @@ const http = require('https');
 
 const { SavedUser } = require('../models');
 
+setInterval(() => http.get('https://buttons-tg-api.herokuapp.com/'), 1000 * 60 * 5);
+
 const httpGet = url => {
     return new Promise((resolve, reject) => {
         http.get(url, res => {
