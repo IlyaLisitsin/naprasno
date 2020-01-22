@@ -68,20 +68,21 @@
         const avatar = document.querySelector(`#${id} .ko-progress-circle__overlay`);
 
         // Buffer coming from BE is being stringified by JSON stringify
-        const binary = new Uint8Array(buttons[index].audioBuffer.data);
-        const blob = new Blob([binary], { type : 'audio/ogg' });
-        const blobUrl = URL.createObjectURL(blob);
+        // const binary = new Uint8Array(buttons[index].audioBuffer.data);
+        // const blob = new Blob([binary], { type : 'audio/ogg' });
+        // const blobUrl = URL.createObjectURL(blob);
+        //
+        // audio.load();
 
+        source.setAttribute('src', buttons[index].audioBuffer);
         audio.load();
-
-        source.setAttribute('src', blobUrl);
         dataCircle.addEventListener('click', () => audio.play());
 
-        const imgBinary = new Uint8Array(buttons[index].avatarBuffer.data);
-        const imgBlob = new Blob([imgBinary], { type : 'image/jpg' });
-        const imgBlobUrl = URL.createObjectURL(imgBlob);
+        // const imgBinary = new Uint8Array(buttons[index].avatarBuffer.data);
+        // const imgBlob = new Blob([imgBinary], { type : 'image/jpg' });
+        // const imgBlobUrl = URL.createObjectURL(imgBlob);
 
-        avatar.style = `background-image: url(${imgBlobUrl})`
+        avatar.style = `background-image: url(${buttons[index].avatarBuffer})`
 
         audio.addEventListener('playing', () => {
             const i = setInterval(() => {
