@@ -4,31 +4,55 @@ const { SavedUser } = require('../models');
 
 // setInterval(() => http.get('https://buttons-tg-api.herokuapp.com/'), 1000 * 60 * 5);
 
-const httpGet = url => {
-    return new Promise((resolve, reject) => {
-        http.get(url, res => {
-            const chunksArray = [];
-            let length = 0;
-            res.on('data', chunk => {
-                chunksArray.push(chunk);
-                length += chunk.length;
-            });
-            res.on('end', () => resolve(Buffer.concat(chunksArray), length));
-        }).on('error', reject);
-    });
-};
+const AWS = require('aws-sdk');
+
+const s3 = new AWS.S3({
+    accessKeyId: process.env.AWS_KEY_ID,
+    secretAccessKey: process.env.AWS_KEY,
+    signatureVersion: 'v4',
+    region: 'ap-northeast-2',
+});
+
+const signedUrlExpireSeconds = 60 * 1200
 
 const generateRenderInstance = async function () {
-    const usersArr = await SavedUser.find({});
+    const [audioUrlCollection, avatarUrlCollection] = await Promise.all([
+        new Promise(resolve => s3.listObjectsV2({ Bucket: 'button-audio' }, function(err, data) {
+            resolve(Promise.all(data.Contents.map(content => {
+                return new Promise(resolve => {
+                    s3.getSignedUrl('getObject', {
+                        Bucket: 'button-audio',
+                        Key: content.Key,
+                        Expires: signedUrlExpireSeconds,
+                    }, function (err, url) {
+                        resolve(url)
+                    })
+                })
+            })))
+        })),
+        new Promise(resolve => s3.listObjectsV2({ Bucket: 'button-avatar' }, function(err, data) {
+            resolve(Promise.all(data.Contents.map(content => {
+                return new Promise(resolve => {
+                    s3.getSignedUrl('getObject', {
+                        Bucket: 'button-avatar',
+                        Key: content.Key,
+                        Expires: signedUrlExpireSeconds,
+                    }, function (err, url) {
+                        resolve(url)
+                    })
+                })
+            })))
+        }))
+    ]);
 
-    const avatarArr = await Promise.all(usersArr.map(({ avatarUrl }) => httpGet(`https://api.telegram.org/file/bot${process.env.TG_TOKEN}/${avatarUrl}`)))
-
-    const renderInstance = avatarArr.map((avatarBuffer, index) => ({
-        id: usersArr[index].username,
-        avatarBuffer,
-    }));
+    const renderInstance = audioUrlCollection.map((audioUrl, index) => ({
+        id: `_${Math.random().toString(36).substr(2, 9)}`,
+        audioBuffer: audioUrl,
+        avatarBuffer: avatarUrlCollection[index],
+    }))
 
     return renderInstance;
 };
 
 module.exports = { generateRenderInstance };
+
