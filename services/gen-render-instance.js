@@ -1,8 +1,6 @@
 const http = require('https');
 
-const { SavedUser } = require('../models');
-
-// setInterval(() => http.get('https://buttons-tg-api.herokuapp.com/'), 1000 * 60 * 5);
+setInterval(() => http.get('https://buttons-tg-api.herokuapp.com/'), 1000 * 60 * 5);
 
 const AWS = require('aws-sdk');
 
@@ -13,12 +11,14 @@ const s3 = new AWS.S3({
     region: 'ap-northeast-2',
 });
 
-const signedUrlExpireSeconds = 60 * 1200
+const signedUrlExpireSeconds = 60 * 60 * 24;
 
 const generateRenderInstance = async function () {
     const [audioUrlCollection, avatarUrlCollection] = await Promise.all([
         new Promise(resolve => s3.listObjectsV2({ Bucket: 'button-audio' }, function(err, data) {
-            resolve(Promise.all(data.Contents.map(content => {
+            if (err) console.log(err);
+            else {
+                resolve(Promise.all(data.Contents.map(content => {
                 return new Promise(resolve => {
                     s3.getSignedUrl('getObject', {
                         Bucket: 'button-audio',
@@ -29,9 +29,12 @@ const generateRenderInstance = async function () {
                     })
                 })
             })))
+            }
         })),
         new Promise(resolve => s3.listObjectsV2({ Bucket: 'button-avatar' }, function(err, data) {
-            resolve(Promise.all(data.Contents.map(content => {
+            if (err) console.log(err);
+            else {
+                resolve(Promise.all(data.Contents.map(content => {
                 return new Promise(resolve => {
                     s3.getSignedUrl('getObject', {
                         Bucket: 'button-avatar',
@@ -42,6 +45,7 @@ const generateRenderInstance = async function () {
                     })
                 })
             })))
+            }
         }))
     ]);
 
@@ -49,7 +53,7 @@ const generateRenderInstance = async function () {
         id: `_${Math.random().toString(36).substr(2, 9)}`,
         audioBuffer: audioUrl,
         avatarBuffer: avatarUrlCollection[index],
-    }))
+    }));
 
     return renderInstance;
 };

@@ -4,7 +4,6 @@ const path = require('path');
 const PORT = process.env.PORT || 3000;
 
 const { generateRenderInstance } = require('./services/gen-render-instance');
-const { getAudioByUsername } = require('./services/get-audio-by-username');
 const { setupMongoose } = require('./init/setup-mongo');
 
 (async function () {
@@ -25,12 +24,6 @@ const { setupMongoose } = require('./init/setup-mongo');
 
             const renderInstance = await generateRenderInstance();
             res.render('pages/buttons-list', { buttons: JSON.stringify(renderInstance)})
-        })
-        .get('/buttons/:username', async (req, res) => {
-            const { username } = req.params;
-
-            const audio = await getAudioByUsername(username);
-            res.json(audio)
         })
         .listen(PORT, () => console.log(`Listening on ${ PORT }`));
 
